@@ -1,0 +1,2 @@
+kubernetes==28.1.0
+zeroconf==0.119.0
