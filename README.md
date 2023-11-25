@@ -1,10 +1,9 @@
 # kube-mdns
-## Kubernetes mDNS Publisher
 
 ## Overview
 This Python program, deployed as a container in Kubernetes, enables the automatic publishing of mDNS (Multicast DNS) records based on Ingress resources within your local network without manipulating your local DNS Server. It automatically checks for changes in your ingresses and will add / remove mDNS records.
 
-# (Current) Limitations
+## (Current) Limitations
 The program is currently at an early stage. Don't expect too much, currently it works for my needs in my local setup, but I will try to implement some of the still missing features.
 
 - Gets only one load balancer IP for mDNS publishing
@@ -16,6 +15,7 @@ The program is currently at an early stage. Don't expect too much, currently it 
 
 ## How to use
 If you want to have an mDNS record for one of your ingresses, you just need to add ".local" to the host of the ingress rule set.
+
 ![Example Ingress Yaml](https://imgur.com/kTKdoyl.jpg)
 
 After applying, the pod should be able to recognize the change and will publishing the address 
