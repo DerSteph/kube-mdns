@@ -28,12 +28,14 @@ jobs:
        registry: ghcr.io
        username: ${{github.actor}}
        password: ${{secrets.GITHUB_TOKEN}}
-      
-    - name: Build and Push Docker image
-      uses: ASzc/change-string-case-action@v1
+
+    - id: lowercase
+      uses: Entepotenz/change-string-case-action@v1
       with:
-       string: ${{github.repository_owner}}
-    - run: |
+       repo_owner: ${{github.repository_owner}}
+    
+    - name: Build and Push Docker image
+      run: |
         docker buildx create --use
         docker buildx inspect --bootstrap
-        docker buildx build -t ghcr.io/${{steps.string.outputs.lowercase}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+        docker buildx build -t ghcr.io/${{steps.lowercase.outputs.lowercase}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
