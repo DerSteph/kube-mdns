@@ -30,7 +30,10 @@ jobs:
        password: ${{secrets.GITHUB_TOKEN}}
       
     - name: Build and Push Docker image
-      run: |
+      uses: ASzc/change-string-case-action@v1
+      with:
+       string: ${{github.repository_owner}}
+    - run: |
         docker buildx create --use
         docker buildx inspect --bootstrap
-        docker buildx build -t ghcr.io/${{github.repository_owner.lowercase}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+        docker buildx build -t ghcr.io/${{steps.string.outputs.lowercase}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
