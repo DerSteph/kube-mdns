@@ -32,7 +32,7 @@ jobs:
     - id: lowercase
       uses: Entepotenz/change-string-case-action-min-dependencies@v1.0.1
       with:
-       repo_owner: ${{github.repository_owner}}
+       string: ${{github.actor}}
     
     - name: Build and Push Docker image
       run: |
