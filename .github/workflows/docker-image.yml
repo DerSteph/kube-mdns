@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - id: lowercase
+      uses: Entepotenz/change-string-case-action-min-dependencies@v1.0.1
+      with:
+       string: ${{github.actor}}
+    
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -28,11 +33,6 @@ jobs:
        registry: ghcr.io
        username: ${{github.actor}}
        password: ${{secrets.GITHUB_TOKEN}}
-
-    - id: lowercase
-      uses: Entepotenz/change-string-case-action-min-dependencies@v1.0.1
-      with:
-       string: ${{github.actor}}
 
     - name: Build and push
       uses: docker/build-push-action@v5
