@@ -33,4 +33,4 @@ jobs:
       run: |
         docker buildx create --use
         docker buildx inspect --bootstrap
-        docker buildx build -t ghcr.io/${{github.actor}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+        docker buildx build -t ghcr.io/${{github.repository_owner.lowercase}}/kube-mdns:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
