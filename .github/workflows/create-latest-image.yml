@@ -3,9 +3,8 @@ name: Docker Image CI
 on:
   push:
     branches: [ "master" ]
-    paths-ignore:
-      - '.github/workflows/**'
     paths:
+      - '!.github/workflows/**'
       - '.github/workflows/create-latest-image.yml'
   pull_request:
     branches: [ "master" ]
