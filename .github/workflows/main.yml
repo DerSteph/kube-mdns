@@ -42,4 +42,4 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        tags: ghcr.io/${{steps.lowercase.outputs.lowercase}}/kube-mdns:${{github.ref}}
+        tags: ghcr.io/${{steps.lowercase.outputs.lowercase}}/kube-mdns:${{github.ref_name}}
