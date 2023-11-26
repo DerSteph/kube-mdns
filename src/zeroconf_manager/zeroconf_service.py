@@ -16,24 +16,25 @@ class ZeroconfService:
         self,
         logger: logging.Logger,
         zeroconf_instance: zeroconf.Zeroconf,
-        ip_address: str,
         storage_service: StorageService
     ):
         self._logger = logger
         self._zeroconf_instance = zeroconf_instance
-        self._ip_address = ip_address
         self._storage_service = storage_service
-
-    def initial_publish(self, ingress_vo_list: list[IngressValueObject]):
-        for ingress_vo in ingress_vo_list:
-            self.create_record(ingress_vo)
 
     def force_remove_all_records(self):
         self._zeroconf_instance.unregister_all_services()
         self._zeroconf_instance.close()
 
-    def create_record(self, ingress_vo: IngressValueObject):
+    def create_record(self, ingress_vo: IngressValueObject, ip_addresses: list[str]):
         hostname_dict = {}
+
+        ip_addresses_in_bytes = []
+
+        for ip in ip_addresses:
+            ip_addresses_in_bytes.append(
+                socket.inet_aton(ip)
+            )
 
         for hostname in ingress_vo.hostnames:
             without_local = hostname.replace(".local", "")
@@ -41,9 +42,7 @@ class ZeroconfService:
             info = zeroconf.ServiceInfo(
                 SERVICE_TYPE,
                 f"{without_local}.{SERVICE_TYPE}",
-                addresses=[
-                    socket.inet_aton(self._ip_address)
-                ],
+                addresses=ip_addresses_in_bytes,
                 port=80,
                 server=f"{hostname}."
             )
@@ -53,7 +52,7 @@ class ZeroconfService:
             hostname_dict[hostname] = info
 
             self._logger.info(
-                f"Published {hostname} for load balancer ip {self._ip_address}")
+                f"Published {hostname} for load balancer ips {','.join(ip_addresses)}")
 
         self._storage_service.add(
             IngressEntity(
@@ -63,15 +62,20 @@ class ZeroconfService:
             )
         )
 
-    def add_hostname_to_record(self, ingress_entity: IngressEntity, hostname: str):
+    def add_hostname_to_record(self, ingress_entity: IngressEntity, hostname: str, ip_addresses: list[str]):
         without_local = hostname.replace(".local", "")
+
+        ip_addresses_in_bytes = []
+
+        for ip in ip_addresses:
+            ip_addresses_in_bytes.append(
+                socket.inet_aton(ip)
+            )
 
         info = zeroconf.ServiceInfo(
             SERVICE_TYPE,
             f"{without_local}.{SERVICE_TYPE}",
-            addresses=[
-                socket.inet_aton(self._ip_address)
-            ],
+            addresses=ip_addresses_in_bytes,
             port=80,
             server=f"{hostname}."
         )
@@ -84,11 +88,11 @@ class ZeroconfService:
         )
 
         self._logger.info(
-            f"Published {hostname} for load balancer ip {self._ip_address}")
+            f"Published {hostname} for load balancer ip {','.join(ip_addresses)}")
 
     def remove_hostname_of_record(self, ingress_entity: IngressEntity, hostname: str):
         service_info = ingress_entity.find_mdns_entry_by_hostname(hostname)
-        
+
         # return if hostname not found anymore
         if service_info == None:
             return
@@ -97,14 +101,24 @@ class ZeroconfService:
 
         ingress_entity.remove_mdns_entry(hostname)
 
+        ip_addresses_in_str = []
+
+        for ip in service_info.addresses:
+            ip_addresses_in_str.append(socket.inet_ntoa(ip))
+
         self._logger.info(
-            f"Removed {hostname} from load balancer ip {self._ip_address}")
+            f"Removed {hostname} from load balancer ip {','.join(ip_addresses_in_str)}")
 
     def delete_record(self, ingress_entity: IngressEntity):
         for hostname, service_info in ingress_entity.list_mdns_entries():
             self._zeroconf_instance.unregister_service(service_info)
 
+            ip_addresses_in_str = []
+
+            for ip in service_info.addresses:
+                ip_addresses_in_str.append(socket.inet_ntoa(ip))
+
             self._logger.info(
-                f"Removed {hostname} from load balancer ip {self._ip_address}")
+                f"Removed {hostname} from load balancer ip {','.join(ip_addresses_in_str)}")
 
         self._storage_service.remove(ingress_entity)

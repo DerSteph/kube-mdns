@@ -22,15 +22,14 @@ def main():
 
     storage_service: StorageService = StorageService()
 
-    ip_address = kubernetes_service.find_external_ip_from_load_balancer()
+    #ip_address = kubernetes_service.find_external_ip_from_load_balancer()
     
-    if ip_address == None:
-        logging.error("Could not find any ip address from service / loadbalencer for ingress to publish mdns adresses.")
-        return
+    #if ip_address == None:
+    #    logging.error("Could not find any ip address from service / loadbalencer for ingress to publish mdns adresses.")
+    #    return
 
     zeroconf_service: ZeroconfService = ZeroconfServiceFactory.create(
         logging.getLogger("zeroconfService"),
-        ip_address,
         storage_service
     )
 

@@ -68,12 +68,15 @@ class KubernetesService:
                 namespace=namespace_name)
 
             for service in service_list.items:
+                # check also for app.kubernetes.io/name=traefik in label
                 if service.spec.type == LOADBALANCER_STRING:
                     external_ips = service.status.load_balancer.ingress
                     if external_ips != None:
                         self._logger.info(
                             f"Found Service {service.metadata.name} of Ingress")
                         if external_ips[0].ip != None:
+                            # benötige hier alle externalIps!!
+                            # prüfe: wie finde ich raus, welcher service für die ingress zuständig sind?
                             self._logger.info(
                                 f"Found External IP {external_ips[0].ip} of Ingress")
                             return external_ips[0].ip
