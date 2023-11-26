@@ -41,7 +41,12 @@ class KubernetesWatcher:
 
         ingress_name = ingress.metadata.name
         
-        ip_adresses = ingress.status.load_balancer.ingress
+        ip_addresses_object = ingress.status.load_balancer.ingress
+        
+        ip_addresses = []
+        
+        for ip_object in ip_addresses_object:
+            ip_addresses.append(ip_object.ip)
 
         mdns_hostnames = []
 
@@ -66,7 +71,7 @@ class KubernetesWatcher:
             mdns_hostnames
         )
 
-        self._zeroconf_service.create_record(ingress_vo, ip_adresses)
+        self._zeroconf_service.create_record(ingress_vo, ip_addresses)
 
     def check_deleted_ingress(self, ingress):
         namespace_name = ingress.metadata.namespace
@@ -92,7 +97,12 @@ class KubernetesWatcher:
 
         ingress_name = ingress.metadata.name
         
-        ip_adresses = ingress.status.load_balancer.ingress
+        ip_addresses_object = ingress.status.load_balancer.ingress
+        
+        ip_addresses = []
+        
+        for ip_object in ip_addresses_object:
+            ip_addresses.append(ip_object.ip)
 
         found_ingress_entity = self._storage_service.find_by_namespace_name_and_ingress_name(
             namespace_name,
@@ -126,4 +136,4 @@ class KubernetesWatcher:
 
         for hostname in diff1:
             self._zeroconf_service.add_hostname_to_record(
-                found_ingress_entity, hostname, ip_adresses)
+                found_ingress_entity, hostname, ip_addresses)
