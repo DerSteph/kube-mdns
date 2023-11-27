@@ -43,6 +43,9 @@ class KubernetesWatcher:
         
         ip_addresses_object = ingress.status.load_balancer.ingress
         
+        if ip_addresses_object is None:
+            return
+        
         ip_addresses = []
         
         for ip_object in ip_addresses_object:
@@ -51,16 +54,16 @@ class KubernetesWatcher:
         mdns_hostnames = []
 
         for rule in ingress.spec.rules:
-            if rule.host != None and rule.host.endswith(Config.MDNS_SUFFIX):
+            if rule.host is not None and rule.host.endswith(Config.MDNS_SUFFIX):
                 mdns_hostnames.append(rule.host)
 
-        if mdns_hostnames == []:
+        if not mdns_hostnames:
             return
 
         if self._storage_service.find_by_namespace_name_and_ingress_name(
             namespace_name,
             ingress_name
-        ) != None:
+        ) is not None:
             logging.warning(
                 'Ingress entity in storage was found when ingress was added')
             return
@@ -83,7 +86,7 @@ class KubernetesWatcher:
             ingress_name
         )
 
-        if ingress_entity == None:
+        if ingress_entity is None:
             logging.warning(
                 'Ingress entity in storage was not found when ingress was removed')
             return
@@ -99,6 +102,9 @@ class KubernetesWatcher:
         
         ip_addresses_object = ingress.status.load_balancer.ingress
         
+        if ip_addresses_object is None:
+            return
+        
         ip_addresses = []
         
         for ip_object in ip_addresses_object:
@@ -109,7 +115,7 @@ class KubernetesWatcher:
             ingress_name
         )
 
-        if found_ingress_entity == None:
+        if found_ingress_entity is None:
             # modified ingress had no mdns / .local records in the rules before, so we will create one
             self.check_added_ingress(ingress)
             return
@@ -119,7 +125,7 @@ class KubernetesWatcher:
         for rule in ingress.spec.rules:
             hostname = rule.host
 
-            if hostname.endswith(Config.MDNS_SUFFIX) == True:
+            if hostname.endswith(Config.MDNS_SUFFIX) is True:
                 event_hostnames.append(hostname)
 
         # only new event hostnames with .local -> add
