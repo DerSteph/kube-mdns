@@ -6,12 +6,12 @@ This Python program, deployed as a container in Kubernetes, enables the automati
 ## (Current) Limitations
 The program is currently at an early stage. Don't expect too much, currently it works for my needs in my local setup, but I will try to implement some of the still missing features.
 
-- Gets only one load balancer IP for mDNS publishing
-- Only works for .local top level domain
-- No configuration through annotations or additional parameters when starting the Python script
-- Uses only port 80
-- No configuration for predefining mDNS entries in your network
-- Currently only works with a pod, no database in the background
+- [x] ~~Gets only one load balancer IP for mDNS publishing~~ Implemented with `feature-1`
+- [ ] Only works for .local top level domain
+- [ ] No configuration through annotations or additional parameters when starting the Python script
+- [ ] Uses only port 80
+- [ ] No configuration for predefining mDNS entries in your network
+- [ ] Currently only works with a pod, no database in the background
 
 ## How to use
 If you want to have an mDNS record for one of your ingresses, you just need to add ".local" to the host of the ingress rule set.
