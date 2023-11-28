@@ -2,8 +2,6 @@
 
 import logging
 from src.core.core_service import CoreService
-from src.kubernetes_connector.kubernetes_service_factory import KubernetesServiceFactory
-from src.kubernetes_connector.kubernetes_service import KubernetesService
 from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
 from src.kubernetes_connector.kubernetes_watcher_factory import KubernetesWatcherFactory
 from src.storage.storage_service import StorageService
@@ -16,17 +14,7 @@ def main():
 
     logging.info("Starting kube-mdns service...")
 
-    kubernetes_service: KubernetesService = KubernetesServiceFactory.create(
-        logging.getLogger('kubernetesService')
-    )
-
     storage_service: StorageService = StorageService()
-
-    #ip_address = kubernetes_service.find_external_ip_from_load_balancer()
-    
-    #if ip_address == None:
-    #    logging.error("Could not find any ip address from service / loadbalencer for ingress to publish mdns adresses.")
-    #    return
 
     zeroconf_service: ZeroconfService = ZeroconfServiceFactory.create(
         logging.getLogger("zeroconfService"),
