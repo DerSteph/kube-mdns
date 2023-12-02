@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+from kubernetes_connector.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
 from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
 from src.kubernetes_connector.kubernetes_watcher_factory import KubernetesWatcherFactory
@@ -13,6 +14,8 @@ def main():
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
     logging.info("Starting kube-mdns service...")
+    
+    KubernetesFactory.create(debug=False)
 
     storage_service: StorageService = StorageService()
 
