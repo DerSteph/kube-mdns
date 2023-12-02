@@ -10,6 +10,10 @@ LOADBALANCER_STRING = "LoadBalancer"
 
 
 class KubernetesService:
+    """
+    Kubernetes class to generate an initial state. Currently not used because handled by the watcher
+    """
+
     def __init__(
         self,
         logger: logging.Logger,
