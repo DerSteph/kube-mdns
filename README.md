@@ -83,7 +83,7 @@ spec:
       serviceAccountName: kube-mdns-service-account
       hostNetwork: true
       containers:
-        - image: ---
+        - image: ghcr.io/dersteph/kube-mdns:latest
           name: kube-mdns
           imagePullPolicy: Always
       restartPolicy: Always
