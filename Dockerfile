@@ -1,13 +1,17 @@
-FROM python:3.10-slim
+FROM python:3.10-alpine
+
+RUN adduser -u 1000 -D nonrootuser
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
+COPY --chown=nonrootuser:nonrootuser requirements.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-ADD src src
+ADD --chown=nonrootuser:nonrootuser src src
 
 ENV PYTHONPATH="$PYTHONPATH:/usr/src/app"
+
+USER nonrootuser
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT [ "python", "src/main.py" ]
