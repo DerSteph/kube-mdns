@@ -1,15 +1,12 @@
-name: Create docker image for latest changes
+name: Create docker image by pull request
 
 on:
-  push:
+  pull_request:
     branches: [ "master" ]
-    paths:
-      - '!.github/workflows/**'
-      - '.github/workflows/create-latest-image.yml'
 
 jobs:
   build:
-
+    if: startsWith(github.head_ref, 'feature') && github.event.pull_request.user.login == 'DerSteph'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,4 +42,4 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        tags: ghcr.io/${{steps.lowercase.outputs.lowercase}}/kube-mdns:latest
+        tags: ghcr.io/${{steps.lowercase.outputs.lowercase}}/kube-mdns:${{github.head_ref}}

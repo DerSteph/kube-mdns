@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import logging
+import os
 from kubernetes_connector.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
 from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
@@ -40,11 +41,11 @@ def main():
             'Starting kube-mdns was successful. Start listening for incoming ingress changes...')
         kubernetes_watcher.start()
     except Exception:
-        logging.exception("Error occured")
-    finally:
-        logging.info("Shutdown mdns service and unregister services")
+        logging.exception("Error occured! Shutdown mdns service and unregister services")
 
         zeroconf_service.force_remove_all_records()
+        
+        exit(os.EX_SOFTWARE)
 
 
 if __name__ == "__main__":
