@@ -1,8 +1,8 @@
 from kubernetes import watch, client
 
-from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
+from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
 class KubernetesWatcherFactory:

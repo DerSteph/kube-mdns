@@ -1,10 +1,10 @@
 import logging
 from kubernetes import watch, client
 
-from src.kubernetes_connector.ingress_value_object import IngressValueObject
+from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
-from src.kubernetes_connector.config import Config
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
+from src.kubernetes_utils.config import Config
 
 
 class KubernetesWatcher:

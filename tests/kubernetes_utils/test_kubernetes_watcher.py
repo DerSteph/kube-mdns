@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import Mock
 
-from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
+from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
 from src.storage.ingress_entity import IngressEntity
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 class TestkubernetesWatcher(unittest.TestCase):
     def test_StartAddedEvent(self):

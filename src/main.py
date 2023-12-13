@@ -2,13 +2,13 @@
 
 import logging
 import os
-from kubernetes_connector.kubernetes_factory import KubernetesFactory
+from kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
-from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
-from src.kubernetes_connector.kubernetes_watcher_factory import KubernetesWatcherFactory
+from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
+from src.kubernetes_utils.kubernetes_watcher_factory import KubernetesWatcherFactory
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service_factory import ZeroconfServiceFactory
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
+from src.zeroconf_utils.zeroconf_service_factory import ZeroconfServiceFactory
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
 def main():

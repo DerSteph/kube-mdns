@@ -2,7 +2,7 @@ import logging
 import socket
 import zeroconf
 
-from src.kubernetes_connector.ingress_value_object import IngressValueObject
+from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.storage.ingress_entity import IngressEntity
 from src.storage.storage_service import StorageService
 
