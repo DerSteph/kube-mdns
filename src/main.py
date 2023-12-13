@@ -2,7 +2,7 @@
 
 import logging
 import os
-from kubernetes_utils.kubernetes_factory import KubernetesFactory
+from src.kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
 from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
 from src.kubernetes_utils.kubernetes_watcher_factory import KubernetesWatcherFactory
@@ -15,7 +15,7 @@ def main():
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
     logging.info("Starting kube-mdns service...")
-    
+
     KubernetesFactory.create(debug=False)
 
     storage_service: StorageService = StorageService()
@@ -41,10 +41,11 @@ def main():
             'Starting kube-mdns was successful. Start listening for incoming ingress changes...')
         kubernetes_watcher.start()
     except Exception:
-        logging.exception("Error occured! Shutdown mdns service and unregister services")
+        logging.exception(
+            "Error occured! Shutdown mdns service and unregister services")
 
         zeroconf_service.force_remove_all_records()
-        
+
         exit(os.EX_SOFTWARE)
 
 

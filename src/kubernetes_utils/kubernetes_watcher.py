@@ -40,14 +40,14 @@ class KubernetesWatcher:
         namespace_name = ingress.metadata.namespace
 
         ingress_name = ingress.metadata.name
-        
+
         ip_addresses_object = ingress.status.load_balancer.ingress
-        
+
         if ip_addresses_object is None:
             return
-        
+
         ip_addresses = []
-        
+
         for ip_object in ip_addresses_object:
             ip_addresses.append(ip_object.ip)
 
@@ -99,14 +99,14 @@ class KubernetesWatcher:
         namespace_name = ingress.metadata.namespace
 
         ingress_name = ingress.metadata.name
-        
+
         ip_addresses_object = ingress.status.load_balancer.ingress
-        
+
         if ip_addresses_object is None:
             return
-        
+
         ip_addresses = []
-        
+
         for ip_object in ip_addresses_object:
             ip_addresses.append(ip_object.ip)
 
