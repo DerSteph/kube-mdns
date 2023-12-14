@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 from src.kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
 from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
@@ -46,7 +47,7 @@ def main():
 
         zeroconf_service.force_remove_all_records()
 
-        exit(os.EX_SOFTWARE)
+        sys.exit(os.EX_SOFTWARE)
 
 
 if __name__ == "__main__":
