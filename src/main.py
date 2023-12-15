@@ -3,6 +3,7 @@
 import logging
 import os
 import sys
+from src.core.argparse_factory import ArgparseFactory
 from src.kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
 from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
@@ -13,11 +14,13 @@ from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
 def main():
+    args = ArgparseFactory.create()
+    
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
     logging.info("Starting kube-mdns service...")
 
-    KubernetesFactory.create(debug=False)
+    KubernetesFactory.create(debug=args.debug)
 
     storage_service: StorageService = StorageService()
 
