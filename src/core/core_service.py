@@ -1,6 +1,6 @@
 import logging
 import signal
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
 class CoreService:

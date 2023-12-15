@@ -2,20 +2,21 @@
 
 import logging
 import os
-from kubernetes_connector.kubernetes_factory import KubernetesFactory
+import sys
+from src.kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService
-from src.kubernetes_connector.kubernetes_watcher import KubernetesWatcher
-from src.kubernetes_connector.kubernetes_watcher_factory import KubernetesWatcherFactory
+from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
+from src.kubernetes_utils.kubernetes_watcher_factory import KubernetesWatcherFactory
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service_factory import ZeroconfServiceFactory
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
+from src.zeroconf_utils.zeroconf_service_factory import ZeroconfServiceFactory
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
 def main():
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
     logging.info("Starting kube-mdns service...")
-    
+
     KubernetesFactory.create(debug=False)
 
     storage_service: StorageService = StorageService()
@@ -41,11 +42,12 @@ def main():
             'Starting kube-mdns was successful. Start listening for incoming ingress changes...')
         kubernetes_watcher.start()
     except Exception:
-        logging.exception("Error occured! Shutdown mdns service and unregister services")
+        logging.exception(
+            "Error occured! Shutdown mdns service and unregister services")
 
         zeroconf_service.force_remove_all_records()
-        
-        exit(os.EX_SOFTWARE)
+
+        sys.exit(os.EX_SOFTWARE)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import logging
 
 import kubernetes.client as client
 
-from src.kubernetes_connector.ingress_value_object import IngressValueObject
+from src.kubernetes_utils.ingress_value_object import IngressValueObject
 
 MDNS_SUFFIX = ".local"
 

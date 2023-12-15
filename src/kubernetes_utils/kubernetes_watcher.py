@@ -1,10 +1,10 @@
 import logging
 from kubernetes import watch, client
 
-from src.kubernetes_connector.ingress_value_object import IngressValueObject
+from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.storage.storage_service import StorageService
-from src.zeroconf_manager.zeroconf_service import ZeroconfService
-from src.kubernetes_connector.config import Config
+from src.zeroconf_utils.zeroconf_service import ZeroconfService
+from src.kubernetes_utils.config import Config
 
 
 class KubernetesWatcher:
@@ -40,14 +40,14 @@ class KubernetesWatcher:
         namespace_name = ingress.metadata.namespace
 
         ingress_name = ingress.metadata.name
-        
+
         ip_addresses_object = ingress.status.load_balancer.ingress
-        
+
         if ip_addresses_object is None:
             return
-        
+
         ip_addresses = []
-        
+
         for ip_object in ip_addresses_object:
             ip_addresses.append(ip_object.ip)
 
@@ -99,14 +99,14 @@ class KubernetesWatcher:
         namespace_name = ingress.metadata.namespace
 
         ingress_name = ingress.metadata.name
-        
+
         ip_addresses_object = ingress.status.load_balancer.ingress
-        
+
         if ip_addresses_object is None:
             return
-        
+
         ip_addresses = []
-        
+
         for ip_object in ip_addresses_object:
             ip_addresses.append(ip_object.ip)
 

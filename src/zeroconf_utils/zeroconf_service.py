@@ -2,7 +2,7 @@ import logging
 import socket
 import zeroconf
 
-from src.kubernetes_connector.ingress_value_object import IngressValueObject
+from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.storage.ingress_entity import IngressEntity
 from src.storage.storage_service import StorageService
 
@@ -94,7 +94,7 @@ class ZeroconfService:
         service_info = ingress_entity.find_mdns_entry_by_hostname(hostname)
 
         # return if hostname not found anymore
-        if service_info == None:
+        if service_info is None:
             return
 
         self._zeroconf_instance.unregister_service(service_info)
