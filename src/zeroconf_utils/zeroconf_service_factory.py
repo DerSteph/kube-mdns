@@ -7,11 +7,11 @@ from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 class ZeroconfServiceFactory:
     @staticmethod
-    def create(logger: logging.Logger, storageService: StorageService) -> ZeroconfService:
+    def create(logger: logging.Logger, storage_service: StorageService) -> ZeroconfService:
         zc = zeroconf.Zeroconf()
 
         return ZeroconfService(
             logger,
             zc,
-            storageService
+            storage_service
         )
