@@ -94,7 +94,7 @@ class ZeroconfService:
         service_info = ingress_entity.find_mdns_entry_by_hostname(hostname)
 
         # return if hostname not found anymore
-        if service_info == None:
+        if service_info is None:
             return
 
         self._zeroconf_instance.unregister_service(service_info)
