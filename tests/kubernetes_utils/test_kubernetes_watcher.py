@@ -2,8 +2,8 @@ import unittest
 from unittest.mock import Mock
 
 from src.kubernetes_utils.kubernetes_watcher import KubernetesWatcher
-from src.storage.ingress_entity import IngressEntity
-from src.storage.storage_service import StorageService
+from src.ingress_storage.ingress_entity import IngressEntity
+from src.ingress_storage.ingress_storage import IngressStorage
 from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
 
@@ -42,7 +42,7 @@ class TestKubernetesWatcher(unittest.TestCase):
 
         networking_api = Mock()
 
-        storage_service = Mock(spec=StorageService)
+        storage_service = Mock(spec=IngressStorage)
 
         storage_service.find_by_namespace_name_and_ingress_name.return_value = None
 
@@ -93,7 +93,7 @@ class TestKubernetesWatcher(unittest.TestCase):
 
         networkingApi = Mock()
 
-        storage_service = Mock(spec=StorageService)
+        storage_service = Mock(spec=IngressStorage)
 
         storage_service.find_by_namespace_name_and_ingress_name.return_value = Mock(
             spec=IngressEntity)
@@ -145,7 +145,7 @@ class TestKubernetesWatcher(unittest.TestCase):
 
         networking_api = Mock()
 
-        storage_service = Mock(spec=StorageService)
+        storage_service = Mock(spec=IngressStorage)
 
         ingress_entity_mock = Mock(spec=IngressEntity)
 

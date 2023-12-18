@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import zeroconf
 
-from src.storage.ingress_entity import IngressEntity
+from src.ingress_storage.ingress_entity import IngressEntity
 
 
 class TestIngressEntity(unittest.TestCase):

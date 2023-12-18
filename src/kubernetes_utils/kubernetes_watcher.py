@@ -2,7 +2,7 @@ import logging
 from kubernetes import watch, client
 
 from src.kubernetes_utils.ingress_value_object import IngressValueObject
-from src.storage.storage_service import StorageService
+from src.ingress_storage.ingress_storage import IngressStorage
 from src.zeroconf_utils.zeroconf_service import ZeroconfService
 from src.kubernetes_utils.config import Config
 
@@ -12,7 +12,7 @@ class KubernetesWatcher:
         self,
         watch_instance: watch.Watch,
         networking_v1_api: client.NetworkingV1Api,
-        storage_service: StorageService,
+        storage_service: IngressStorage,
         zeroconf_service: ZeroconfService,
     ):
         self._watcher = watch_instance
