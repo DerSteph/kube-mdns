@@ -7,10 +7,10 @@ This Python program, deployed as a container in Kubernetes, enables the automati
 The program is currently at an early stage. Don't expect too much, currently it works for my needs in my local setup, but I will try to implement some of the still missing features.
 
 - [x] ~~Gets only one load balancer IP for mDNS publishing~~ Implemented with `feature-1`
+- [x] ~~No configuration for predefining mDNS entries in your network~~ Implemented with `feature-3`
 - [ ] Only works for .local top level domain
 - [ ] No configuration through annotations or additional parameters when starting the Python script
 - [ ] Uses only port 80
-- [ ] No configuration for predefining mDNS entries in your network
 - [ ] Currently only works with a pod, no database in the background
 
 ## How to use
@@ -21,6 +21,25 @@ If you want to have an mDNS record for one of your ingresses, you just need to a
 After applying, the pod should be able to recognize the change and will publishing the address 
 
 ![Example Log of kube-mdns](https://imgur.com/AssZkf0.jpg)
+
+### Manual entries
+Manual entries can also be added using a predefined json file. 
+```
+[
+    {
+        "hostname": "homeassistant.local",
+        "ip": "192.168.1.101"
+    },
+    {
+        "hostname": "paperless.local",
+        "ip": "192.168.1.120"
+    },
+    // ...
+    // add more json objects like above
+]
+```
+
+With the startargument `--config <Path of config.json>` the entries can be added at startup.
 ## How to install
 Before you can run kube-mdns, first you need to add a ClusterRole, a ClusterRoleBinding and a ServiceAccount, wihch gives kube-dns the sufficient permissions to access the kubernetes events.
 
