@@ -1,6 +1,6 @@
 import logging
 import socket
-from typing import Set
+from typing import List
 import zeroconf
 from permanent_host_storage.permanent_host_entity import PermanentHostEntity
 from permanent_host_storage.permanent_host_storage import PermanentHostStorage
@@ -30,7 +30,7 @@ class ZeroconfService:
 
     def init_permanent_hosts(
         self,
-        permanent_hosts_vo: Set[PermanentHostValueObject]
+        permanent_hosts_vo: List[PermanentHostValueObject]
     ):
         permanent_hosts_entities = set()
 
