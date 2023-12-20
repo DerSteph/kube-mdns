@@ -2,9 +2,9 @@ import logging
 import socket
 from typing import List
 import zeroconf
-from permanent_host_storage.permanent_host_entity import PermanentHostEntity
-from permanent_host_storage.permanent_host_storage import PermanentHostStorage
-from permanent_host_storage.permanent_host_value_object import PermanentHostValueObject
+from src.permanent_host_storage.permanent_host_entity import PermanentHostEntity
+from src.permanent_host_storage.permanent_host_storage import PermanentHostStorage
+from src.permanent_host_storage.permanent_host_value_object import PermanentHostValueObject
 
 from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.ingress_storage.ingress_entity import IngressEntity

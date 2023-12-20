@@ -3,8 +3,8 @@
 import logging
 import os
 import sys
-from permanent_host_storage.permanent_host_json_loader import PermanentHostJsonLoader
-from permanent_host_storage.permanent_host_storage import PermanentHostStorage
+from src.permanent_host_storage.permanent_host_json_loader import PermanentHostJsonLoader
+from src.permanent_host_storage.permanent_host_storage import PermanentHostStorage
 from src.core.argparse_factory import ArgparseFactory
 from src.kubernetes_utils.kubernetes_factory import KubernetesFactory
 from src.core.core_service import CoreService

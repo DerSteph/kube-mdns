@@ -1,7 +1,7 @@
 import logging
 
 import zeroconf
-from permanent_host_storage.permanent_host_storage import PermanentHostStorage
+from src.permanent_host_storage.permanent_host_storage import PermanentHostStorage
 from src.ingress_storage.ingress_storage import IngressStorage
 from src.zeroconf_utils.zeroconf_service import ZeroconfService
 
