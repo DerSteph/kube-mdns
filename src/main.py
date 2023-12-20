@@ -35,6 +35,8 @@ def main():
     )
 
     if args.config is not None:
+        logging.info("Try parsing config.json for initial values...")
+        
         permanent_storage_json_loader = PermanentHostJsonLoader(
             args.config
         )
