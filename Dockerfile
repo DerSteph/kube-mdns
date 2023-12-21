@@ -1,5 +1,7 @@
 FROM python:3.10-alpine
 
+RUN apk add --no-cache rust cargo
+
 RUN adduser -u 1000 -D nonrootuser
 
 WORKDIR /usr/src/app
