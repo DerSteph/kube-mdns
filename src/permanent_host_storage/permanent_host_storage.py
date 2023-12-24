@@ -4,7 +4,7 @@ from src.permanent_host_storage.permanent_host_entity import PermanentHostEntity
 
 
 class PermanentHostStorage:
-    _permanent_hosts: Set[PermanentHostEntity]
+    _permanent_hosts: Set[PermanentHostEntity] = set()
 
     def find_by_hostname(
         self,
