@@ -1,0 +1,2 @@
+class JsonLoadErrorException(Exception):
+    pass

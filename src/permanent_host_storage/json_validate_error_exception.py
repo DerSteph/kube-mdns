@@ -1,0 +1,2 @@
+class JsonValidateErrorException(Exception):
+    pass
