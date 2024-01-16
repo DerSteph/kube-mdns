@@ -1,5 +1,5 @@
 class Config:
-    MDNS_SUFFIX = ".local"
+    MDNS_SUFFIX = '.local'
 
     ADDED = 'ADDED'
 
