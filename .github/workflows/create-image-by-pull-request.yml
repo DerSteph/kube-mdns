@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    if: startsWith(github.head_ref, 'feature') && github.event.pull_request.user.login == 'DerSteph'
+    if: github.event.pull_request.user.login == 'DerSteph'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
 
 
   build:
-    if: startsWith(github.head_ref, 'feature') && github.event.pull_request.user.login == 'DerSteph'
+    if: github.event.pull_request.user.login == 'DerSteph'
     runs-on: ubuntu-latest
     permissions:
       contents: read
