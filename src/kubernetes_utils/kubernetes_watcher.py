@@ -41,7 +41,7 @@ class KubernetesWatcher:
 
         ingress_name = ingress.metadata.name
 
-        ip_addresses_object = ingress.status.load_balancer.ingress
+        ip_addresses_object = ingress.status.load_balancer.ingress or None
 
         if ip_addresses_object is None:
             return
@@ -52,8 +52,13 @@ class KubernetesWatcher:
             ip_addresses.append(ip_object.ip)
 
         mdns_hostnames = []
+        
+        ingress_rules = ingress.spec.rules or []
+        
+        if ingress_rules is []:
+            return
 
-        for rule in ingress.spec.rules:
+        for rule in ingress_rules:
             if rule.host is not None and rule.host.endswith(Config.MDNS_SUFFIX):
                 mdns_hostnames.append(rule.host)
 
@@ -122,7 +127,9 @@ class KubernetesWatcher:
 
         event_hostnames = []
 
-        for rule in ingress.spec.rules:
+        ingress_rules = ingress.spec.rules or []
+
+        for rule in ingress_rules:
             hostname = rule.host
 
             if hostname.endswith(Config.MDNS_SUFFIX) is True:
