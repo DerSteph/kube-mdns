@@ -44,18 +44,17 @@ class KubernetesWatcher:
         ip_addresses_object = ingress.status.load_balancer.ingress or None
 
         if ip_addresses_object is None:
+            logging.debug(
+                'Ingress %s could not be added, because no LoadBalancer with IP Addreses were found in ingress', 
+                ingress_name
+            )
             return
 
-        ip_addresses = []
-
-        for ip_object in ip_addresses_object:
-            ip_addresses.append(ip_object.ip)
-
         mdns_hostnames = []
-        
+
         ingress_rules = ingress.spec.rules or []
-        
-        if ingress_rules is []:
+
+        if not ingress_rules:
             return
 
         for rule in ingress_rules:
@@ -63,6 +62,19 @@ class KubernetesWatcher:
                 mdns_hostnames.append(rule.host)
 
         if not mdns_hostnames:
+            return
+
+        ip_addresses = []
+
+        for ip_object in ip_addresses_object:
+            if ip_object.ip is None:
+                logging.debug(
+                    'One IP Object of LoadBalancer for Ingress %s has no IP Address. Skip...', ingress_name)
+            else:
+                ip_addresses.append(ip_object.ip)
+
+        if not ip_addresses:
+            logging.warning('No IP addresses for Ingress %s found. Skip...', ingress_name)
             return
 
         if self._storage_service.find_by_namespace_name_and_ingress_name(
