@@ -14,7 +14,7 @@ from src.kubernetes_utils.kubernetes_watcher_factory import KubernetesWatcherFac
 from src.ingress_storage.ingress_storage import IngressStorage
 from src.zeroconf_utils.zeroconf_service_factory import ZeroconfServiceFactory
 from src.zeroconf_utils.zeroconf_service import ZeroconfService
-from zeroconf_utils.zeroconf_factory import ZeroconfFactory
+from src.zeroconf_utils.zeroconf_factory import ZeroconfFactory
 
 
 def main():
