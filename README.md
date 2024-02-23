@@ -33,6 +33,9 @@ You can add this config with a config map to the deployment.
 
 With the startargument `--config <Path of config.json>` the entries can be added at startup.
 
+### Specify interface
+By default, kube-mdns will choose the default interface of the pod for broadcasting mDNS requests. You can add `--interface <interface-name>` as startargument to choose manual interface.
+
 ## (Current) Limitations
 The program is currently at an early stage. Don't expect too much, currently it works for my needs in my local setup, but I will try to implement some of the still missing features.
 
