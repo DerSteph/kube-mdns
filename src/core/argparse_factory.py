@@ -10,8 +10,6 @@ class ArgparseFactory:
         parser.add_argument("--debug", action="store_true")
 
         parser.add_argument("--config", action="store", type=ArgparseFactory.validate_file)
-        
-        parser.add_argument("--interface", action="store")
 
         return parser.parse_args()
 

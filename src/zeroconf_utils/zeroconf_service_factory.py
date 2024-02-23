@@ -11,12 +11,13 @@ class ZeroconfServiceFactory:
     def create(
         logger: logging.Logger,
         ingress_storage: IngressStorage,
-        permanent_hosts_storage: PermanentHostStorage,
-        zeroconf: zeroconf.Zeroconf
+        permanent_hosts_storage: PermanentHostStorage
     ) -> ZeroconfService:
+        zc = zeroconf.Zeroconf(zeroconf.InterfaceChoice.Default)
+
         return ZeroconfService(
             logger,
-            zeroconf,
+            zc,
             ingress_storage,
             permanent_hosts_storage
         )

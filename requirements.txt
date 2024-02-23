@@ -2,4 +2,3 @@ jsonschema==4.20.0
 jsonschema-specifications==2023.11.2
 kubernetes==28.1.0
 zeroconf==0.119.0
-ifaddr==0.2.0
