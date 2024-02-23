@@ -13,7 +13,7 @@ class ZeroconfServiceFactory:
         ingress_storage: IngressStorage,
         permanent_hosts_storage: PermanentHostStorage
     ) -> ZeroconfService:
-        zc = zeroconf.Zeroconf('enp1s0')
+        zc = zeroconf.Zeroconf()
 
         return ZeroconfService(
             logger,
