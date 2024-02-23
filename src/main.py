@@ -20,7 +20,7 @@ from src.zeroconf_utils.zeroconf_factory import ZeroconfFactory
 def main():
     args = ArgparseFactory.create()
 
-    logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+    logging.basicConfig(format='%(asctime)s - %(message)s', level=args.logging or logging.INFO)
 
     logging.info("Starting kube-mdns service...")
 
