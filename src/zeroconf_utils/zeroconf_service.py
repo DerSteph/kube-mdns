@@ -10,7 +10,7 @@ from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.ingress_storage.ingress_entity import IngressEntity
 from src.ingress_storage.ingress_storage import IngressStorage
 
-SERVICE_TYPE = "_http._tcp.local."
+SERVICE_TYPE = "_https._tcp.local."
 
 PORT = 80  # for now, can be changed in the future
 
