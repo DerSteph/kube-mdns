@@ -188,7 +188,7 @@ class KubernetesWatcher:
         if len(ports) == 0:
             if self._port is not None:
                 return self._port
-            return None
+            return 443
         if 443 in ports:
             return 443
         if 80 in ports:
