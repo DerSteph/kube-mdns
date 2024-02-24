@@ -65,6 +65,8 @@ class KubernetesWatcher:
             return
 
         ip_addresses = []
+        
+        ports = []
 
         for ip_object in ip_addresses_object:
             if ip_object.ip is None:
@@ -72,6 +74,11 @@ class KubernetesWatcher:
                     'One IP Object of LoadBalancer for Ingress %s has no IP Address. Skip...', ingress_name)
             else:
                 ip_addresses.append(ip_object.ip)
+                
+                for port_object in ip_object.ports or []:
+                    ports.append(port_object.port)
+                
+        preferred_port = self._get_preferred_port(ports)
 
         if not ip_addresses:
             logging.warning('No IP addresses for Ingress %s found. Skip...', ingress_name)
@@ -91,7 +98,7 @@ class KubernetesWatcher:
             mdns_hostnames
         )
 
-        self._zeroconf_service.create_record(ingress_vo, ip_addresses)
+        self._zeroconf_service.create_record(ingress_vo, ip_addresses, preferred_port)
 
     def check_deleted_ingress(self, ingress):
         namespace_name = ingress.metadata.namespace
@@ -123,9 +130,16 @@ class KubernetesWatcher:
             return
 
         ip_addresses = []
+        
+        ports = []
 
         for ip_object in ip_addresses_object:
             ip_addresses.append(ip_object.ip)
+
+            for port_object in ip_object.ports or []:
+                ports.append(port_object.port)
+            
+        preferred_port = self._get_preferred_port(ports)
 
         found_ingress_entity = self._storage_service.find_by_namespace_name_and_ingress_name(
             namespace_name,
@@ -161,4 +175,18 @@ class KubernetesWatcher:
 
         for hostname in diff1:
             self._zeroconf_service.add_hostname_to_record(
-                found_ingress_entity, hostname, ip_addresses)
+                found_ingress_entity, hostname, ip_addresses, preferred_port)
+            
+    def _get_preferred_port(self, ports : list[int]) -> int | None:
+        # prefer 443
+        # then 80
+        # then first element
+        # else none 
+        if len(ports) == 0:
+            return None
+        if 443 in ports:
+            return 443
+        if 80 in ports:
+            return 80
+        
+        return ports[1]
