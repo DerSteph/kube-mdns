@@ -14,6 +14,8 @@ class ArgparseFactory:
         parser.add_argument("--config", action="store", type=ArgparseFactory.validate_file, help="Set config by value")
         
         parser.add_argument("--interface", action="store", help="Set preferred interface for mDNS by value")
+        
+        parser.add_argument("--port", action="store", help="Set default port when port is not found in ingress")
 
         return parser.parse_args()
 
