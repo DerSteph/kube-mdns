@@ -67,7 +67,7 @@ class ZeroconfService:
         self._zeroconf_instance.unregister_all_services()
         self._zeroconf_instance.close()
 
-    def create_record(self, ingress_vo: IngressValueObject, ip_addresses: list[str]):
+    def create_record(self, ingress_vo: IngressValueObject, ip_addresses: list[str], preferred_port : int | None):
         hostname_dict = {}
 
         ip_addresses_in_bytes = []
@@ -93,7 +93,7 @@ class ZeroconfService:
                 SERVICE_TYPE,
                 f"{without_local}.{SERVICE_TYPE}",
                 addresses=ip_addresses_in_bytes,
-                port=80,
+                port=preferred_port,
                 server=f"{hostname}."
             )
 
@@ -112,7 +112,7 @@ class ZeroconfService:
             )
         )
 
-    def add_hostname_to_record(self, ingress_entity: IngressEntity, hostname: str, ip_addresses: list[str]):
+    def add_hostname_to_record(self, ingress_entity: IngressEntity, hostname: str, ip_addresses: list[str], preferred_port: int | None):
         # check for already manual defined hostnames
         if self._permanent_hosts_storage.find_by_hostname(
             hostname
@@ -135,7 +135,7 @@ class ZeroconfService:
             SERVICE_TYPE,
             f"{without_local}.{SERVICE_TYPE}",
             addresses=ip_addresses_in_bytes,
-            port=80,
+            port=preferred_port,
             server=f"{hostname}."
         )
 
