@@ -9,11 +9,13 @@ class KubernetesWatcherFactory:
     @staticmethod
     def create(
         zeroconf_service: ZeroconfService,
-        storage_service: IngressStorage
+        storage_service: IngressStorage,
+        port: int | None
     ) -> KubernetesWatcher:
         return KubernetesWatcher(
             watch.Watch(),
             client.NetworkingV1Api(),
             storage_service,
             zeroconf_service,
+            port
         )

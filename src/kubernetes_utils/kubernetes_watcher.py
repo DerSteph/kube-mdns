@@ -14,11 +14,13 @@ class KubernetesWatcher:
         networking_v1_api: client.NetworkingV1Api,
         storage_service: IngressStorage,
         zeroconf_service: ZeroconfService,
+        port: int | None
     ):
         self._watcher = watch_instance
         self._networking_api = networking_v1_api
         self._storage_service = storage_service
         self._zeroconf_service = zeroconf_service
+        self._port = port
 
     def start(self):
         for event in self._watcher.stream(
@@ -181,8 +183,11 @@ class KubernetesWatcher:
         # prefer 443
         # then 80
         # then first element
+        # then args port
         # else none 
         if len(ports) == 0:
+            if self._port is not None:
+                return self._port
             return None
         if 443 in ports:
             return 443
