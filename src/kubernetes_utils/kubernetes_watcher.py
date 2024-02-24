@@ -14,7 +14,7 @@ class KubernetesWatcher:
         networking_v1_api: client.NetworkingV1Api,
         storage_service: IngressStorage,
         zeroconf_service: ZeroconfService,
-        port: int | None
+        port : int | None = None
     ):
         self._watcher = watch_instance
         self._networking_api = networking_v1_api

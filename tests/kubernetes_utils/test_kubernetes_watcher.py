@@ -26,6 +26,12 @@ class TestKubernetesWatcher(unittest.TestCase):
         ip = Mock()
 
         ip.ip = "192.168.1.2"
+        
+        port_object = Mock()
+        
+        port_object.port = 443
+        
+        ip.ports = [port_object]
 
         ingress.status.load_balancer.ingress = [
             ip
@@ -52,7 +58,7 @@ class TestKubernetesWatcher(unittest.TestCase):
             watcher,
             networking_api,
             storage_service,
-            zeroconf_service
+            zeroconf_service,
         )
 
         kub_watcher.start()
@@ -130,6 +136,12 @@ class TestKubernetesWatcher(unittest.TestCase):
 
         ip.ip = "192.168.1.2"
 
+        port_object = Mock()
+        
+        port_object.port = 443
+        
+        ip.ports = [port_object]
+
         ingress.status.load_balancer.ingress = [
             ip
         ]
@@ -171,7 +183,7 @@ class TestKubernetesWatcher(unittest.TestCase):
 
         zeroconf_service.add_hostname_to_record.assert_called_with(ingress_entity_mock, 'test_new.local', [
             '192.168.1.2'
-        ])
+        ], 443)
 
 
 if __name__ == '__main__':
