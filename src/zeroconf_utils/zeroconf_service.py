@@ -96,13 +96,17 @@ class ZeroconfService:
                 port=preferred_port,
                 server=f"{hostname}."
             )
+            try:
+                self._zeroconf_instance.register_service(info)
+                
+                hostname_dict[hostname] = info
 
-            self._zeroconf_instance.register_service(info)
-
-            hostname_dict[hostname] = info
-
-            self._logger.info(
-                f"Published {hostname} for load balancer ips {','.join(ip_addresses)}")
+                self._logger.info(
+                    f"Published {hostname} for load balancer ips {','.join(ip_addresses)}")
+            except (zeroconf.ServiceNameAlreadyRegistered, zeroconf.NonUniqueNameException):
+                self._logger.error(
+                    f"Hostname {hostname} is already published in the network. Skipped..."
+                )
 
         self._storage_service.add(
             IngressEntity(
@@ -139,15 +143,20 @@ class ZeroconfService:
             server=f"{hostname}."
         )
 
-        self._zeroconf_instance.register_service(info)
+        try:
+            self._zeroconf_instance.register_service(info)
 
-        ingress_entity.add_mdns_entry(
-            hostname,
-            info
-        )
+            ingress_entity.add_mdns_entry(
+                hostname,
+                info
+            )
 
-        self._logger.info(
-            f"Published {hostname} for load balancer ip {','.join(ip_addresses)}")
+            self._logger.info(
+                f"Published {hostname} for load balancer ip {','.join(ip_addresses)}")
+        except (zeroconf.ServiceNameAlreadyRegistered, zeroconf.NonUniqueNameException):
+            self._logger.error(
+                f"Hostname {hostname} is already published in the network. Skipped..."
+            )
 
     def remove_hostname_of_record(self, ingress_entity: IngressEntity, hostname: str):
         service_info = ingress_entity.find_mdns_entry_by_hostname(hostname)
