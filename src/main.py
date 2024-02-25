@@ -56,7 +56,7 @@ def main():
     kubernetes_watcher: KubernetesWatcher = KubernetesWatcherFactory.create(
         zeroconf_service,
         ingress_storage,
-        args.port,
+        args.port
     )
 
     core_service = CoreService(

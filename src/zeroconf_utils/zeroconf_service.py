@@ -10,7 +10,7 @@ from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.ingress_storage.ingress_entity import IngressEntity
 from src.ingress_storage.ingress_storage import IngressStorage
 
-DEFAULT_PORT = 80  # for now, can be changed in the future
+DEFAULT_PORT = 443
 
 
 class ZeroconfService:
@@ -34,15 +34,15 @@ class ZeroconfService:
     ):
         permanent_hosts_entities = set()
 
-        for value in permanent_hosts_vo:
-            without_local = value.hostname.replace(".local", "")
+        for permanent_host_vo in permanent_hosts_vo:
+            without_local = permanent_host_vo.hostname.replace(".local", "")
 
             info = zeroconf.ServiceInfo(
-                self._service_type,
-                f"{without_local}.{self._service_type}",
-                addresses=[socket.inet_aton(value.ip)],
-                port=DEFAULT_PORT,
-                server=f"{value.hostname}."
+                permanent_host_vo.service_type or self._service_type,
+                f"{without_local}.{permanent_host_vo.service_type or self._service_type}",
+                addresses=[socket.inet_aton(permanent_host_vo.ip)],
+                port=permanent_host_vo.port or DEFAULT_PORT,
+                server=f"{permanent_host_vo.hostname}."
             )
 
             self._zeroconf_instance.register_service(
@@ -50,11 +50,11 @@ class ZeroconfService:
             )
 
             self._logger.info(
-                f"Published {value.hostname} for load balancer ip {value.ip} by manual config")
+                f"Published {permanent_host_vo.hostname} for load balancer ip {permanent_host_vo.ip} by manual config")
 
             permanent_hosts_entities.add(
                 PermanentHostEntity(
-                    value.hostname,
+                    permanent_host_vo.hostname,
                     info
                 )
             )

@@ -1,6 +1,12 @@
 [
     {
         "hostname": "homeassistant.local",
-        "ip": "192.168.1.101"
+        "ip": "192.168.1.101",
+        "port": 8080,
+        "service_type": "_https._tcp.local."
+    },
+    {
+        "hostname": "paperless.local",
+        "ip": "192.168.1.102"
     }
 ]
