@@ -19,7 +19,9 @@ Manual entries can also be added using a predefined json file.
 [
     {
         "hostname": "homeassistant.local",
-        "ip": "192.168.1.101"
+        "ip": "192.168.1.101",
+        "port": 443, // optional
+        "service_type": "_https._tcp.local." // optional
     },
     {
         "hostname": "paperless.local",
@@ -33,8 +35,18 @@ You can add this config with a config map to the deployment.
 
 With the startargument `--config <Path of config.json>` the entries can be added at startup.
 
+### Port selection
+kube-mdns will check in the loadBalancer entry of the Ingress object, if the ip also have any ports. It will search for port 443 first and then for port 80. When both not found, it will just use the first port of the list.
+
+If no ports are found in Ingress, it will automatically use 443 as default port. 
+
+You can specify the default port by adding `--port <port-int>` as startargument.
+
+### Servicetype selection
+The default servicetype is `_http._tcp.local.`. You can specifiy a different service type by adding `--service-type <service-type>` as start argument.
+
 ### Specify interface
-By default, kube-mdns will choose the default interface of the pod for broadcasting mDNS requests. You can add `--interface <interface-name>` as startargument to choose manual interface.
+By default, kube-mdns will choose the default interface of the pod for broadcasting mDNS requests. You can add `--interface <interface-name>` as startargument to choose manual interface (e.g. using Multus to inject an network interface).
 
 ## (Current) Limitations
 The program is currently at an early stage. Don't expect too much, currently it works for my needs in my local setup, but I will try to implement some of the still missing features.
@@ -43,7 +55,7 @@ The program is currently at an early stage. Don't expect too much, currently it 
 - [x] ~~No configuration for predefining mDNS entries in your network~~ Implemented with `feature-3`
 - [ ] Only works for .local top level domain
 - [ ] No configuration through annotations in ingress yaml
-- [ ] Uses only port 80
+- [x] ~~Uses only port 80~~ Implemented with `feature-4-use-port-depending-on-ingress-service`
 - [ ] Currently only works with a pod, no database in the background
 
 ## How to install
