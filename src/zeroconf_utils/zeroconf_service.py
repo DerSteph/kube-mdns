@@ -44,20 +44,25 @@ class ZeroconfService:
                 port=permanent_host_vo.port or DEFAULT_PORT,
                 server=f"{permanent_host_vo.hostname}."
             )
-
-            self._zeroconf_instance.register_service(
-                info
-            )
-
-            self._logger.info(
-                f"Published {permanent_host_vo.hostname} for load balancer ip {permanent_host_vo.ip} by manual config")
-
-            permanent_hosts_entities.add(
-                PermanentHostEntity(
-                    permanent_host_vo.hostname,
+            
+            try:
+                self._zeroconf_instance.register_service(
                     info
                 )
-            )
+
+                self._logger.info(
+                    f"Published {permanent_host_vo.hostname} for load balancer ip {permanent_host_vo.ip} by manual config")
+
+                permanent_hosts_entities.add(
+                    PermanentHostEntity(
+                        permanent_host_vo.hostname,
+                        info
+                    )
+                )
+            except (zeroconf.NonUniqueNameException, zeroconf.ServiceNameAlreadyRegistered):
+                self._logger.error(
+                    f"Hostname {permanent_host_vo.hostname} is already published in the network. Skipped..."
+                )
 
         self._permanent_hosts_storage.init_storage(
             permanent_hosts_entities
