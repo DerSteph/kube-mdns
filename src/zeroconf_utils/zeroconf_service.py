@@ -10,9 +10,7 @@ from src.kubernetes_utils.ingress_value_object import IngressValueObject
 from src.ingress_storage.ingress_entity import IngressEntity
 from src.ingress_storage.ingress_storage import IngressStorage
 
-SERVICE_TYPE = "_https._tcp.local."
-
-PORT = 80  # for now, can be changed in the future
+DEFAULT_PORT = 80  # for now, can be changed in the future
 
 
 class ZeroconfService:
@@ -21,12 +19,14 @@ class ZeroconfService:
         logger: logging.Logger,
         zeroconf_instance: zeroconf.Zeroconf,
         storage_service: IngressStorage,
-        permanent_hosts_storage: PermanentHostStorage
+        permanent_hosts_storage: PermanentHostStorage,
+        service_type : str
     ):
         self._logger = logger
         self._zeroconf_instance = zeroconf_instance
         self._storage_service = storage_service
         self._permanent_hosts_storage = permanent_hosts_storage
+        self._service_type = service_type
 
     def init_permanent_hosts(
         self,
@@ -38,10 +38,10 @@ class ZeroconfService:
             without_local = value.hostname.replace(".local", "")
 
             info = zeroconf.ServiceInfo(
-                SERVICE_TYPE,
-                f"{without_local}.{SERVICE_TYPE}",
+                self._service_type,
+                f"{without_local}.{self._service_type}",
                 addresses=[socket.inet_aton(value.ip)],
-                port=PORT,
+                port=DEFAULT_PORT,
                 server=f"{value.hostname}."
             )
 
@@ -90,8 +90,8 @@ class ZeroconfService:
             without_local = hostname.replace(".local", "")
 
             info = zeroconf.ServiceInfo(
-                SERVICE_TYPE,
-                f"{without_local}.{SERVICE_TYPE}",
+                self._service_type,
+                f"{without_local}.{self._service_type}",
                 addresses=ip_addresses_in_bytes,
                 port=preferred_port,
                 server=f"{hostname}."
@@ -132,8 +132,8 @@ class ZeroconfService:
             )
 
         info = zeroconf.ServiceInfo(
-            SERVICE_TYPE,
-            f"{without_local}.{SERVICE_TYPE}",
+            self._service_type,
+            f"{without_local}.{self._service_type}",
             addresses=ip_addresses_in_bytes,
             port=preferred_port,
             server=f"{hostname}."
