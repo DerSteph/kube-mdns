@@ -16,6 +16,8 @@ class ArgparseFactory:
         parser.add_argument("--interface", action="store", help="Set preferred interface for mDNS by value")
         
         parser.add_argument("--port", action="store", help="Set default port when port is not found in ingress")
+        
+        parser.add_argument("--service-type", action="store", help="Set default service type e.g. _http._tcp.local.", default="_http._tcp.local.")
 
         return parser.parse_args()
 

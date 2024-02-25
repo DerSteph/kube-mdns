@@ -36,7 +36,8 @@ def main():
         logging.getLogger("zeroconfService"),
         ingress_storage,
         permanent_hosts_storage,
-        zeroconf
+        zeroconf,
+        args.service_type
     )
 
     if args.config is not None:
@@ -55,7 +56,7 @@ def main():
     kubernetes_watcher: KubernetesWatcher = KubernetesWatcherFactory.create(
         zeroconf_service,
         ingress_storage,
-        args.port
+        args.port,
     )
 
     core_service = CoreService(
