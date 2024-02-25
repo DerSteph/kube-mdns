@@ -11,6 +11,12 @@ class Config:
                     },
                     "ip": {
                         "type": "string"
+                    },
+                    "port": {
+                        "type": "integer"
+                    },
+                    "service_type": {
+                        "type": "string"
                     }
                 },
                 "required": [

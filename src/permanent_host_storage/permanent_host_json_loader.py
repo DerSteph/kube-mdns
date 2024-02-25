@@ -49,11 +49,15 @@ class PermanentHostJsonLoader:
         for value in json_data:
             hostname = value["hostname"]
             ip = value["ip"]
+            port = value.get("port")
+            service_type = value.get("service_type")
 
             permanent_hosts.append(
                 PermanentHostValueObject(
                     hostname,
-                    ip
+                    ip,
+                    port,
+                    service_type
                 )
             )
 
