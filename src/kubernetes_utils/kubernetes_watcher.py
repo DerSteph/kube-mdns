@@ -45,11 +45,9 @@ class KubernetesWatcher:
 
         ip_addresses_object = ingress.status.load_balancer.ingress or None
 
-        print(ingress.metadata)
+        print(ingress.metadata.annotations)
 
         annotations = ingress.metadata.annotations
-        
-        print(annotations)
         
         if "kube-mdns.io/enabled" not in annotations:
             enabled_annotation = None
