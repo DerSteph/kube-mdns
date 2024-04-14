@@ -47,7 +47,10 @@ class KubernetesWatcher:
 
         annotations = ingress.metadata.annotations
         
-        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
+        if "kube-mdns.io/enabled" not in annotations:
+            enabled_annotation = None
+        else:
+            enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
         
         if enabled_annotation is not None:
             if enabled_annotation is False:
@@ -118,7 +121,10 @@ class KubernetesWatcher:
         
         annotations = ingress.metadata.annotations
         
-        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
+        if "kube-mdns.io/enabled" not in annotations:
+            enabled_annotation = None
+        else:
+            enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
         
         if enabled_annotation is not None:
             if enabled_annotation is False:
@@ -168,7 +174,10 @@ class KubernetesWatcher:
             ingress_name
         )
         
-        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
+        if "kube-mdns.io/enabled" not in annotations:
+            enabled_annotation = None
+        else:
+            enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
 
         if found_ingress_entity is None:
             if enabled_annotation is not None:
