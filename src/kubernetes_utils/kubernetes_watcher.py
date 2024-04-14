@@ -45,6 +45,8 @@ class KubernetesWatcher:
 
         ip_addresses_object = ingress.status.load_balancer.ingress or None
 
+        print(ingress.metadata)
+
         annotations = ingress.metadata.annotations
         
         print(annotations)
