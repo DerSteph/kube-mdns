@@ -47,6 +47,8 @@ class KubernetesWatcher:
 
         annotations = ingress.metadata.annotations
         
+        print(annotations)
+        
         if "kube-mdns.io/enabled" not in annotations:
             enabled_annotation = None
         else:
