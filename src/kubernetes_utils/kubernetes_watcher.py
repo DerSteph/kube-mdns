@@ -45,6 +45,15 @@ class KubernetesWatcher:
 
         ip_addresses_object = ingress.status.load_balancer.ingress or None
 
+        annotations = ingress.metadata.annotations
+        
+        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
+        
+        if enabled_annotation is not None:
+            if enabled_annotation is False:
+                logging.debug('Ingress %s is skipped, because annotation kube-mdns.io/enabled is False')
+                return
+
         if ip_addresses_object is None:
             logging.debug(
                 'Ingress %s could not be added, because no LoadBalancer with IP Addreses were found in ingress', 
@@ -106,6 +115,15 @@ class KubernetesWatcher:
         namespace_name = ingress.metadata.namespace
 
         ingress_name = ingress.metadata.name
+        
+        annotations = ingress.metadata.annotations
+        
+        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
+        
+        if enabled_annotation is not None:
+            if enabled_annotation is False:
+                logging.debug('Ingress %s is skipped, because annotation kube-mdns.io/enabled is False')
+                return
 
         ingress_entity = self._storage_service.find_by_namespace_name_and_ingress_name(
             namespace_name,
@@ -128,6 +146,8 @@ class KubernetesWatcher:
 
         ip_addresses_object = ingress.status.load_balancer.ingress
 
+        annotations = ingress.metadata.annotations
+
         if ip_addresses_object is None:
             return
 
@@ -147,11 +167,27 @@ class KubernetesWatcher:
             namespace_name,
             ingress_name
         )
+        
+        enabled_annotation = bool(annotations["kube-mdns.io/enabled"]) or None
 
         if found_ingress_entity is None:
+            if enabled_annotation is not None:
+                if enabled_annotation is False:
+                    logging.debug('Ingress %s will be not added, because annotation kube-mdns.io/enabled is False')
+                    return
+            
             # modified ingress had no mdns / .local records in the rules before, so we will create one
             self.check_added_ingress(ingress)
             return
+        
+        # check for annotation in ingress
+        if enabled_annotation is not None:
+            if enabled_annotation is False:
+                logging.debug('Ingress %s will be removed, because annotation kube-mdns.io/enabled is False')
+                self._zeroconf_service.delete_record(
+                    found_ingress_entity
+                )
+                return
 
         event_hostnames = []
 
