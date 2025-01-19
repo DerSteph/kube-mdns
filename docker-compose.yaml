@@ -1,0 +1,9 @@
+services:
+  workspace: 
+    build:
+      context: .
+      dockerfile: image/Dockerfile
+      target: base
+    volumes:
+      - ./:/usr/src/app
+    tty: true
