@@ -1,0 +1,19 @@
+[project]
+name = "kube-mdns"
+version = "0.3.0"
+description = "Automatic publishing of mDNS records of kubernetes ingresses"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ifaddr==0.2.0",
+    "jsonschema==4.20.0",
+    "jsonschema-specifications==2023.11.2",
+    "kubernetes==28.1.0",
+    "zd>=0.0.4",
+    "zeroconf==0.119.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]

@@ -1,24 +1,35 @@
-FROM python:3.10-alpine as builder
-RUN apk add --no-cache cargo
-ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
-RUN pip wheel --wheel-dir /wheels 'jsonschema==4.20.0'
+FROM python:3.13-alpine AS base
 
-FROM python:3.10-alpine
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-COPY --from=builder /wheels /wheels
+RUN adduser -u 1000 -D app
 
-RUN adduser -u 1000 -D nonrootuser
+USER app
 
 WORKDIR /usr/src/app
 
-COPY --chown=nonrootuser:nonrootuser requirements.txt ./
+FROM base AS build
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/src/app"
+RUN --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
 
-USER nonrootuser
+ADD . /usr/src/app
 
-RUN pip install --no-cache-dir --find-links /wheels 'jsonschema==4.20.0' --pre -r requirements.txt
+RUN uv sync --frozen --no-dev
 
-ADD --chown=nonrootuser:nonrootuser src src
+FROM python:3.13-alpine AS deploy
 
-ENTRYPOINT [ "python", "src/main.py" ]
+RUN adduser -u 1000 -D app
+
+USER app
+
+WORKDIR /usr/src/app
+
+COPY --from=build --chown=app:app /usr/src/app /usr/src/app
+
+ENV PATH="/usr/src/app/.venv/bin:$PATH"
+
+ENTRYPOINT [ ]
+
+CMD ["python", "src/main.py"]
