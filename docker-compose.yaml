@@ -2,8 +2,10 @@ services:
   workspace: 
     build:
       context: .
-      dockerfile: image/Dockerfile
-      target: base
+      dockerfile: Dockerfile
+      target: build
     volumes:
       - ./:/usr/src/app
+    environment:
+      - PYTHONPATH=/usr/src/app
     tty: true
