@@ -6,6 +6,6 @@ services:
       target: build
     volumes:
       - ./:/usr/src/app
-    environment:
-      - PYTHONPATH=/usr/src/app
+#    environment:
+#      - PYTHONPATH=/usr/src/app
     tty: true
