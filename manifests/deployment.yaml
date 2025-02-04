@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kube-mdns
+  name: kube-mdns
+  namespace: kube-mdns-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-mdns
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kube-mdns
+    spec:
+      serviceAccountName: kube-mdns
+      hostNetwork: true
+      containers:
+      - image: kube-mdns:latest
+        name: kube-mdns
+        imagePullPolicy: Never
+        resources:
+          requests:
+            cpu: 300m
+            memory: 300Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
