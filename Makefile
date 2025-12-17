@@ -1,10 +1,10 @@
 include .env
 
 image:
-	docker buildx build -t kube-mdns:latest --progress plain --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+	docker buildx bake kube-mdns-local --load
 
 build:
-	docker buildx build -t kube-mdns:latest --target deploy --load .
+	docker buildx bake kube-mdns --load
 
 kind-load:
 	kind load docker-image kube-mdns:latest
