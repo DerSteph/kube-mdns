@@ -37,4 +37,4 @@ USER app
 
 ENV PATH="/usr/src/app/.venv/bin:$PATH"
 
-CMD ["python", "src/main.py"]
+CMD ["python", "-m", "src.main"]
