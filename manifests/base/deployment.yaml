@@ -21,7 +21,6 @@ spec:
       containers:
       - image: kube-mdns
         name: kube-mdns
-        imagePullPolicy: Never
         resources:
           requests:
             cpu: 300m
