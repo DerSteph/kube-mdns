@@ -19,7 +19,7 @@ spec:
       serviceAccountName: kube-mdns
       hostNetwork: true
       containers:
-      - image: kube-mdns:latest
+      - image: kube-mdns
         name: kube-mdns
         imagePullPolicy: Never
         resources:
