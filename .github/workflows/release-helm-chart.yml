@@ -64,9 +64,8 @@ jobs:
           if [ -n "${{ inputs.app_version }}" ]; then
             EXTRA_ARGS+=(--app-version "${{ inputs.app_version }}")
           elif [ "${{ github.event_name }}" = "release" ]; then
-            # Clean 'v' prefix from release tag if present
-            CLEAN_TAG="${GITHUB_REF_NAME#v}"
-            EXTRA_ARGS+=(--app-version "${CLEAN_TAG}")
+            # Match the image tag published by create-image-by-release.yml
+            EXTRA_ARGS+=(--app-version "${GITHUB_REF_NAME}")
           fi
 
           echo "Packaging chart with args: ${EXTRA_ARGS[*]}"
