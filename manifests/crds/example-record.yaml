@@ -1,0 +1,11 @@
+apiVersion: mdns.net-pilgrim.dev/v1alpha1
+kind: MdnsRecord
+metadata:
+  name: homeassistant
+  namespace: default
+spec:
+  host: homeassistant.local
+  ip: 192.168.1.101
+  port: 8080
+  serviceType: "_https._tcp.local."
+  ttl: 120

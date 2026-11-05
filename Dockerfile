@@ -1,40 +1,18 @@
-FROM python:3.13-alpine AS base
+FROM alpine:3.20 AS builder
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN apk add --no-cache zig
 
-RUN adduser -u 1000 -D app
+WORKDIR /build
+COPY . .
 
-FROM base AS build
+RUN zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSmall
 
-ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
-ENV UV_NO_DEV=1
-ENV UV_PYTHON_DOWNLOADS=0
-
-WORKDIR /usr/src/app
-
-RUN chown -R app:app /usr/src/app
-
-USER app
-
-RUN --mount=type=cache,target=/home/app/.cache/uv,uid=1000,gid=1000 \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
-
-COPY --chown=app:app . .
-
-RUN uv sync --locked
-
-FROM python:3.13-alpine AS deploy
+FROM alpine:3.20 AS deploy
 
 RUN adduser -u 1000 -D app
 
-WORKDIR /usr/src/app
-
-COPY --from=build --chown=app:app /usr/src/app /usr/src/app
+COPY --from=builder /build/zig-out/bin/kube-mdns /usr/local/bin/kube-mdns
 
 USER app
 
-ENV PATH="/usr/src/app/.venv/bin:$PATH"
-
-CMD ["python", "-m", "src.main"]
+ENTRYPOINT ["/usr/local/bin/kube-mdns"]

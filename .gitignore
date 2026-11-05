@@ -36,6 +36,11 @@ MANIFEST
 .cr-release-packages/
 *.tgz
 
+# Zig
+.zig-cache/
+zig-out/
+
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

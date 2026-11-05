@@ -1,5 +1,14 @@
 -include .env
 
+build-zig:
+	zig build -Doptimize=ReleaseSafe
+
+test-zig:
+	zig build test
+
+build-static:
+	zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSmall
+
 image:
 	docker buildx bake kube-mdns-local --load
 
