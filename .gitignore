@@ -36,6 +36,10 @@ MANIFEST
 .cr-release-packages/
 *.tgz
 
+# Go
+/bin/
+/kube-mdns
+
 # Zig
 .zig-cache/
 zig-out/

@@ -1,2 +1,0 @@
-class JsonValidateErrorException(Exception):
-    pass

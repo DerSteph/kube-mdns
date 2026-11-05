@@ -1,13 +1,13 @@
 -include .env
 
-build-zig:
-	zig build -Doptimize=ReleaseSafe
+build:
+	CGO_ENABLED=0 go build -ldflags="-s -w" -o kube-mdns ./cmd/kube-mdns
 
-test-zig:
-	zig build test
+test:
+	go test -v ./...
 
 build-static:
-	zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSmall
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o kube-mdns ./cmd/kube-mdns
 
 image:
 	docker buildx bake kube-mdns-local --load
