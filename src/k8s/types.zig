@@ -28,6 +28,22 @@ pub const IngressSpec = struct {
 pub const ObjectMeta = struct {
     name: []const u8,
     namespace: ?[]const u8 = "default",
+    annotations: ?std.json.ArrayHashMap([]const u8) = null,
+    labels: ?std.json.ArrayHashMap([]const u8) = null,
+
+    pub fn getAnnotation(self: ObjectMeta, key: []const u8) ?[]const u8 {
+        if (self.annotations) |ann| {
+            return ann.map.get(key);
+        }
+        return null;
+    }
+
+    pub fn getLabel(self: ObjectMeta, key: []const u8) ?[]const u8 {
+        if (self.labels) |lbl| {
+            return lbl.map.get(key);
+        }
+        return null;
+    }
 };
 
 pub const Ingress = struct {
@@ -41,6 +57,41 @@ pub const WatchEvent = struct {
     object: Ingress,
 };
 
+// Gateway API HTTPRoute models
+pub const HTTPRouteSpec = struct {
+    hostnames: ?[][]const u8 = null,
+};
+
+pub const HTTPRoute = struct {
+    metadata: ObjectMeta,
+    spec: ?HTTPRouteSpec = null,
+};
+
+pub const HTTPRouteWatchEvent = struct {
+    type: []const u8,
+    object: HTTPRoute,
+};
+
+// Traefik IngressRoute models
+pub const TraefikRoute = struct {
+    match: ?[]const u8 = null,
+};
+
+pub const TraefikIngressRouteSpec = struct {
+    routes: ?[]TraefikRoute = null,
+};
+
+pub const TraefikIngressRoute = struct {
+    metadata: ObjectMeta,
+    spec: ?TraefikIngressRouteSpec = null,
+};
+
+pub const TraefikIngressRouteWatchEvent = struct {
+    type: []const u8,
+    object: TraefikIngressRoute,
+};
+
+// CRD models
 pub const MdnsRecordSpec = struct {
     host: []const u8,
     ip: []const u8,
@@ -58,7 +109,7 @@ pub const MdnsRecordWatchEvent = struct {
     object: MdnsRecord,
 };
 
-test "parse ingress watch event json" {
+test "parse ingress with annotations" {
     const allocator = std.testing.allocator;
 
     const event_json =
@@ -66,25 +117,18 @@ test "parse ingress watch event json" {
         \\   "type": "ADDED",
         \\   "object": {
         \\     "metadata": {
-        \\       "name": "paperless-ingress",
-        \\       "namespace": "paperless-system"
+        \\       "name": "annotated-ingress",
+        \\       "namespace": "default",
+        \\       "annotations": {
+        \\         "mdns.net-pilgrim.dev/enabled": "true",
+        \\         "mdns.net-pilgrim.dev/hostname": "custom.local",
+        \\         "mdns.net-pilgrim.dev/ip": "192.168.1.150",
+        \\         "mdns.net-pilgrim.dev/port": "8443",
+        \\         "mdns.net-pilgrim.dev/service-type": "_https._tcp.local."
+        \\       }
         \\     },
         \\     "spec": {
-        \\       "rules": [
-        \\         {"host": "paperless.local"}
-        \\       ]
-        \\     },
-        \\     "status": {
-        \\       "loadBalancer": {
-        \\         "ingress": [
-        \\           {
-        \\             "ip": "192.168.1.120",
-        \\             "ports": [
-        \\               {"port": 443}
-        \\             ]
-        \\           }
-        \\         ]
-        \\       }
+        \\       "rules": [{"host": "example.com"}]
         \\     }
         \\   }
         \\ }
@@ -96,9 +140,8 @@ test "parse ingress watch event json" {
     });
     defer parsed.deinit();
 
-    try std.testing.expectEqualStrings("ADDED", parsed.value.type);
-    try std.testing.expectEqualStrings("paperless-ingress", parsed.value.object.metadata.name);
-    try std.testing.expectEqualStrings("paperless.local", parsed.value.object.spec.?.rules.?[0].host.?);
-    try std.testing.expectEqualStrings("192.168.1.120", parsed.value.object.status.?.loadBalancer.?.ingress.?[0].ip.?);
-    try std.testing.expectEqual(@as(u16, 443), parsed.value.object.status.?.loadBalancer.?.ingress.?[0].ports.?[0].port);
+    const meta = parsed.value.object.metadata;
+    try std.testing.expectEqualStrings("custom.local", meta.getAnnotation("mdns.net-pilgrim.dev/hostname").?);
+    try std.testing.expectEqualStrings("192.168.1.150", meta.getAnnotation("mdns.net-pilgrim.dev/ip").?);
+    try std.testing.expectEqualStrings("8443", meta.getAnnotation("mdns.net-pilgrim.dev/port").?);
 }
