@@ -1,0 +1,81 @@
+name: Release Helm Chart to GHCR (OCI)
+
+on:
+  release:
+    types: [released]
+  push:
+    branches:
+      - master
+    paths:
+      - 'charts/**'
+      - '.github/workflows/release-helm-chart.yml'
+  workflow_dispatch:
+    inputs:
+      chart_version:
+        description: 'Override chart version (optional, e.g. 0.1.1)'
+        required: false
+        type: string
+      app_version:
+        description: 'Override app version (optional, e.g. 0.3.1)'
+        required: false
+        type: string
+
+jobs:
+  publish-chart:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Lint Helm Chart
+        run: |
+          helm lint charts/kube-mdns
+
+      - name: Determine OCI Destination
+        id: meta
+        run: |
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "owner=${OWNER_LOWER}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR (Helm Registry)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username "${{ github.actor }}" \
+            --password-stdin
+
+      - name: Package Helm Chart
+        id: package
+        run: |
+          mkdir -p .cr-release-packages
+          
+          EXTRA_ARGS=()
+          if [ -n "${{ inputs.chart_version }}" ]; then
+            EXTRA_ARGS+=(--version "${{ inputs.chart_version }}")
+          fi
+          if [ -n "${{ inputs.app_version }}" ]; then
+            EXTRA_ARGS+=(--app-version "${{ inputs.app_version }}")
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            # Clean 'v' prefix from release tag if present
+            CLEAN_TAG="${GITHUB_REF_NAME#v}"
+            EXTRA_ARGS+=(--app-version "${CLEAN_TAG}")
+          fi
+
+          echo "Packaging chart with args: ${EXTRA_ARGS[*]}"
+          helm package charts/kube-mdns "${EXTRA_ARGS[@]}" --destination .cr-release-packages
+
+          CHART_PACKAGE=$(ls .cr-release-packages/kube-mdns-*.tgz | head -n 1)
+          echo "chart_package=${CHART_PACKAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: Push Helm Chart OCI to GHCR
+        run: |
+          echo "Pushing ${{ steps.package.outputs.chart_package }} to oci://ghcr.io/${{ steps.meta.outputs.owner }}/charts..."
+          helm push "${{ steps.package.outputs.chart_package }}" "oci://ghcr.io/${{ steps.meta.outputs.owner }}/charts"

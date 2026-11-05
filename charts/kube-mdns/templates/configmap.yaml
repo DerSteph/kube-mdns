@@ -1,0 +1,12 @@
+{{- if and .Values.kubeMdns.manualHosts (not .Values.kubeMdns.existingConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-config" (include "kube-mdns.fullname" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kube-mdns.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {{- toPrettyJson .Values.kubeMdns.manualHosts | nindent 4 }}
+{{- end }}

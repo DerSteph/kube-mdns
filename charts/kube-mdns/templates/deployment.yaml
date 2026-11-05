@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kube-mdns.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kube-mdns.labels" . | nindent 4 }}
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "kube-mdns.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if and .Values.kubeMdns.manualHosts (not .Values.kubeMdns.existingConfigMap) }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "kube-mdns.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kube-mdns.serviceAccountName" . }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: {{ .Values.dnsPolicy | default (ternary "ClusterFirstWithHostNet" "ClusterFirst" .Values.hostNetwork) }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.kubeMdns.debug .Values.kubeMdns.logging .Values.kubeMdns.interface .Values.kubeMdns.port .Values.kubeMdns.serviceType .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap .Values.kubeMdns.extraArgs }}
+          args:
+            {{- if .Values.kubeMdns.debug }}
+            - --debug
+            {{- end }}
+            {{- if .Values.kubeMdns.logging }}
+            - --logging
+            - {{ .Values.kubeMdns.logging | quote }}
+            {{- end }}
+            {{- if .Values.kubeMdns.interface }}
+            - --interface
+            - {{ .Values.kubeMdns.interface | quote }}
+            {{- end }}
+            {{- if .Values.kubeMdns.port }}
+            - --port
+            - {{ .Values.kubeMdns.port | quote }}
+            {{- end }}
+            {{- if .Values.kubeMdns.serviceType }}
+            - --service-type
+            - {{ .Values.kubeMdns.serviceType | quote }}
+            {{- end }}
+            {{- if or .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap }}
+            - --config
+            - /etc/kube-mdns/config.json
+            {{- end }}
+            {{- with .Values.kubeMdns.extraArgs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap .Values.extraVolumeMounts }}
+          volumeMounts:
+            {{- if or .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap }}
+            - name: config
+              mountPath: /etc/kube-mdns
+              readOnly: true
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+      {{- if or .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap .Values.extraVolumes }}
+      volumes:
+        {{- if or .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap }}
+        - name: config
+          configMap:
+            name: {{ .Values.kubeMdns.existingConfigMap | default (printf "%s-config" (include "kube-mdns.fullname" .)) }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

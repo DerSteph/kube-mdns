@@ -59,7 +59,32 @@ The program is currently at an early stage. Don't expect too much, currently it 
 - [ ] Currently only works with a pod, no database in the background
 
 ## How to install
-Before you can run kube-mdns, first you need to add a ClusterRole, a ClusterRoleBinding and a ServiceAccount, wihch gives kube-dns the sufficient permissions to access the kubernetes events.
+
+### Option 1: Using Helm (Recommended)
+
+You can install `kube-mdns` directly from GitHub Container Registry (GHCR) as an OCI artifact:
+
+```bash
+helm install kube-mdns oci://ghcr.io/net-pilgrim/charts/kube-mdns \
+  --namespace kube-mdns-system \
+  --create-namespace \
+  --version 0.1.0
+```
+
+To configure manual hosts or custom options, pass a custom values file:
+
+```bash
+helm install kube-mdns oci://ghcr.io/net-pilgrim/charts/kube-mdns \
+  --namespace kube-mdns-system \
+  --create-namespace \
+  -f my-values.yaml
+```
+
+For detailed documentation of all chart parameters, see the [Helm Chart README](charts/kube-mdns/README.md).
+
+### Option 2: Using Manifests
+
+Before you can run kube-mdns, first you need to add a ClusterRole, a ClusterRoleBinding and a ServiceAccount, which gives kube-mdns the sufficient permissions to access the kubernetes events.
 
 ```
 apiVersion: rbac.authorization.k8s.io/v1

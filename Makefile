@@ -1,4 +1,4 @@
-include .env
+-include .env
 
 image:
 	docker buildx bake kube-mdns-local --load
@@ -11,3 +11,15 @@ kind-load:
 
 deploy:
 	kubectl apply -f manifests/
+
+helm-lint:
+	helm lint charts/kube-mdns
+
+helm-template:
+	helm template kube-mdns charts/kube-mdns
+
+helm-package:
+	helm package charts/kube-mdns -d .cr-release-packages
+
+helm-install:
+	helm upgrade --install kube-mdns charts/kube-mdns --namespace kube-mdns-system --create-namespace

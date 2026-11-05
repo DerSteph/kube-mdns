@@ -1,0 +1,129 @@
+# Default values for kube-mdns.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/net-pilgrim/kube-mdns
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# hostNetwork must be true for mDNS (UDP 5353 multicast) to reach your local LAN.
+# Set to false only if using Multus CNI with a physical host interface injected.
+hostNetwork: true
+
+# dnsPolicy defaults to ClusterFirstWithHostNet when hostNetwork is true,
+# ensuring the pod can still resolve in-cluster DNS (CoreDNS) records.
+dnsPolicy: ClusterFirstWithHostNet
+
+# Pod update strategy. Recreate is recommended to prevent simultaneous
+# instances conflicting on mDNS service announcements during rollouts.
+strategy:
+  type: Recreate
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount API credentials for a ServiceAccount.
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # Specifies whether RBAC resources (ClusterRole & ClusterRoleBinding) should be created
+  create: true
+  # Annotations to add to the ClusterRole and ClusterRoleBinding
+  annotations: {}
+  # The name of the ClusterRole to use. If not set, generated using fullname template
+  clusterRoleName: ""
+  # Additional rules to append to the ClusterRole if needed
+  extraRules: []
+
+podAnnotations: {}
+podLabels: {}
+deploymentAnnotations: {}
+commonLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 300Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Configuration specific to kube-mdns daemon
+kubeMdns:
+  # When true, passes --debug (uses local ~/.kube/config instead of in-cluster config)
+  debug: false
+
+  # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  logging: "INFO"
+
+  # Optional network interface to bind for mDNS broadcasting (e.g., eth0, net1)
+  # When empty, binds to the default network interface.
+  interface: ""
+
+  # Default port when port is not found in ingress loadBalancer status
+  # Defaults to 443 in kube-mdns if unset
+  port: ""
+
+  # Default mDNS service type (default: _http._tcp.local.)
+  serviceType: "_http._tcp.local."
+
+  # Manual permanent host entries to announce in addition to Ingresses.
+  # When configured, a ConfigMap will be created and mounted at /etc/kube-mdns/config.json.
+  # Example:
+  # manualHosts:
+  #   - hostname: homeassistant.local
+  #     ip: 192.168.1.101
+  #     port: 443
+  #     service_type: "_https._tcp.local."
+  #   - hostname: paperless.local
+  #     ip: 192.168.1.102
+  manualHosts: []
+
+  # Name of an existing ConfigMap containing a config.json file to mount.
+  # Takes precedence over manualHosts ConfigMap generation.
+  existingConfigMap: ""
+
+  # Additional command-line arguments to pass to kube-mdns
+  extraArgs: []
+
+# Additional environment variables for the container
+env: []
+
+# Priority class name
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Additional volumes and volume mounts
+extraVolumes: []
+extraVolumeMounts: []

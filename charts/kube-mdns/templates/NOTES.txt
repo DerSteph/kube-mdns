@@ -1,0 +1,24 @@
+kube-mdns has been deployed!
+
+Release: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+1. Check the deployment status:
+  kubectl --namespace {{ .Release.Namespace }} get deployment {{ include "kube-mdns.fullname" . }}
+
+2. Watch kube-mdns logs to see discovered Ingresses and published mDNS records:
+  kubectl --namespace {{ .Release.Namespace }} logs -f deployment/{{ include "kube-mdns.fullname" . }}
+
+3. Test mDNS resolution from a device on the same local network:
+  # Using dns-sd (macOS) or avahi-resolve (Linux):
+  avahi-resolve -n <your-ingress-host>.local
+  # Or ping / curl directly:
+  ping <your-ingress-host>.local
+
+{{- if .Values.hostNetwork }}
+
+Note: hostNetwork is enabled (required for mDNS multicast UDP 5353 propagation across your physical LAN).
+{{- else }}
+
+Warning: hostNetwork is DISABLED. Unless you are using Multus CNI with a physical interface injected, mDNS multicast packets will not reach devices outside the Kubernetes cluster network.
+{{- end }}

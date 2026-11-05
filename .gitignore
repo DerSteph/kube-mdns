@@ -32,6 +32,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# Helm
+.cr-release-packages/
+*.tgz
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

@@ -1,0 +1,20 @@
+apiVersion: v2
+name: kube-mdns
+description: A Helm chart for kube-mdns - automatic mDNS publisher for Kubernetes Ingresses
+type: application
+version: 0.1.0
+appVersion: "0.3.0"
+kubeVersion: ">=1.19.0"
+keywords:
+  - mdns
+  - zeroconf
+  - ingress
+  - networking
+  - dns
+  - bonjour
+home: https://github.com/net-pilgrim/kube-mdns
+sources:
+  - https://github.com/net-pilgrim/kube-mdns
+maintainers:
+  - name: net-pilgrim
+icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/icon/color/kubernetes-icon-color.svg
