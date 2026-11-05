@@ -93,6 +93,9 @@ kubeMdns:
   # Default mDNS service type (default: _http._tcp.local.)
   serviceType: "_http._tcp.local."
 
+  # Enable CRD / Operator mode (watches MdnsRecord custom resources in addition to Ingresses)
+  enableCrd: false
+
   # Manual permanent host entries to announce in addition to Ingresses.
   # When configured, a ConfigMap will be created and mounted at /etc/kube-mdns/config.json.
   # Example:

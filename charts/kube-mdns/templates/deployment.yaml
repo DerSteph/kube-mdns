@@ -53,8 +53,11 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or .Values.kubeMdns.debug .Values.kubeMdns.logging .Values.kubeMdns.interface .Values.kubeMdns.port .Values.kubeMdns.serviceType .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap .Values.kubeMdns.extraArgs }}
+          {{- if or .Values.kubeMdns.debug .Values.kubeMdns.logging .Values.kubeMdns.interface .Values.kubeMdns.port .Values.kubeMdns.serviceType .Values.kubeMdns.enableCrd .Values.kubeMdns.manualHosts .Values.kubeMdns.existingConfigMap .Values.kubeMdns.extraArgs }}
           args:
+            {{- if .Values.kubeMdns.enableCrd }}
+            - --enable-crd
+            {{- end }}
             {{- if .Values.kubeMdns.debug }}
             - --debug
             {{- end }}

@@ -18,6 +18,21 @@ rules:
       - get
       - list
       - watch
+  {{- if .Values.kubeMdns.enableCrd }}
+  - apiGroups:
+      - mdns.k8s.io
+    resources:
+      - mdnsrecords
+      - mdnsrecords/status
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  {{- end }}
 {{- with .Values.rbac.extraRules }}
 {{ toYaml . | indent 2 }}
 {{- end }}

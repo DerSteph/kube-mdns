@@ -11,13 +11,21 @@ pub const MdnsServer = struct {
     multicast_addr: std.net.Address,
     running: std.atomic.Value(bool),
 
-    pub fn init(allocator: std.mem.Allocator, store: *record_store.RecordStore) !MdnsServer {
+    pub fn init(allocator: std.mem.Allocator, store: *record_store.RecordStore, interface_name: ?[]const u8) !MdnsServer {
         const sock = try std.posix.socket(
             std.posix.AF.INET,
             std.posix.SOCK.DGRAM | std.posix.SOCK.CLOEXEC,
             std.posix.IPPROTO.UDP,
         );
         errdefer std.posix.close(sock);
+
+        // Bind to specific network interface if requested
+        if (interface_name) |iface| {
+            const SO_BINDTODEVICE: c_int = 25;
+            _ = std.posix.setsockopt(sock, std.posix.SOL.SOCKET, SO_BINDTODEVICE, iface) catch |err| {
+                std.log.warn("Failed to bind socket to interface {s}: {any}", .{ iface, err });
+            };
+        }
 
         // Allow multiple processes to bind to port 5353
         const opt_one: c_int = 1;

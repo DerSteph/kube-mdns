@@ -5,7 +5,19 @@ RUN apk add --no-cache zig
 WORKDIR /build
 COPY . .
 
-RUN zig build -Dtarget=x86_64-linux-musl -Doptimize=ReleaseSmall
+ARG TARGETARCH
+
+RUN case "${TARGETARCH}" in \
+      "amd64") TARGET="x86_64-linux-musl" ;; \
+      "arm64") TARGET="aarch64-linux-musl" ;; \
+      *) TARGET="native" ;; \
+    esac && \
+    echo "Building for target ${TARGET} (TARGETARCH=${TARGETARCH})..." && \
+    if [ "$TARGET" = "native" ]; then \
+      zig build -Doptimize=ReleaseSmall ; \
+    else \
+      zig build -Dtarget="${TARGET}" -Doptimize=ReleaseSmall ; \
+    fi
 
 FROM alpine:3.20 AS deploy
 

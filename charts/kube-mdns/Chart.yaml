@@ -2,7 +2,7 @@ apiVersion: v2
 name: kube-mdns
 description: A Helm chart for kube-mdns - automatic mDNS publisher for Kubernetes Ingresses
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: "0.3.0"
 kubeVersion: ">=1.19.0"
 keywords:

@@ -65,7 +65,7 @@ pub fn main() !void {
     }
 
     // Initialize mDNS UDP server
-    var server = server_mod.MdnsServer.init(allocator, &store) catch |err| {
+    var server = server_mod.MdnsServer.init(allocator, &store, cfg.interface) catch |err| {
         std.log.err("Failed to bind mDNS server on port 5353: {any}", .{err});
         return err;
     };
