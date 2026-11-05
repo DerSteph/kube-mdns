@@ -110,18 +110,17 @@ pub fn main() !void {
 
     // Watch loop with auto-reconnect
     while (global_running.load(.acquire)) {
-        var stream = k8s_client.makeStreamRequest("/apis/networking.k8s.io/v1/ingresses?watch=true") catch |err| {
+        var stream = k8s_client.openWatchStream("/apis/networking.k8s.io/v1/ingresses?watch=true") catch |err| {
             std.log.err("Failed to connect to Kubernetes Ingress stream: {any}. Retrying in 5s...", .{err});
             std.time.sleep(5 * std.time.ns_per_s);
             continue;
         };
-        defer stream.close();
+        defer stream.deinit();
 
-        var reader = stream.reader();
-        var line_buf: [16384]u8 = undefined;
+        var line_buf: [32768]u8 = undefined;
 
         while (global_running.load(.acquire)) {
-            const line = reader.readUntilDelimiterOrEof(&line_buf, '\n') catch |err| {
+            const line = stream.readLine(&line_buf) catch |err| {
                 std.log.warn("Stream interrupted: {any}. Reconnecting...", .{err});
                 break;
             };

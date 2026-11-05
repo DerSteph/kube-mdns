@@ -418,13 +418,8 @@ test "watcher with annotations: custom hostname and ip override" {
     var store = record_store.RecordStore.init(allocator);
     defer store.deinit();
 
-    const client = client_mod.K8sClient{
-        .allocator = allocator,
-        .host = "127.0.0.1",
-        .port = 8001,
-        .token = null,
-        .use_tls = false,
-    };
+    var client = try client_mod.K8sClient.initDebug(allocator, "127.0.0.1", 8001);
+    defer client.deinit();
 
     var watcher = Watcher.init(
         allocator,
@@ -497,13 +492,8 @@ test "watcher with HTTPRoute event" {
     var store = record_store.RecordStore.init(allocator);
     defer store.deinit();
 
-    const client = client_mod.K8sClient{
-        .allocator = allocator,
-        .host = "127.0.0.1",
-        .port = 8001,
-        .token = null,
-        .use_tls = false,
-    };
+    var client = try client_mod.K8sClient.initDebug(allocator, "127.0.0.1", 8001);
+    defer client.deinit();
 
     var watcher = Watcher.init(
         allocator,
